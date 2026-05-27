@@ -1,0 +1,2 @@
+Note ajoutée, Cette note est ajoutée à partir d'un texte, tag1, tag2, tag3
+Note ajoutée 2, TEST TEST, tag1, tag1, tag2
