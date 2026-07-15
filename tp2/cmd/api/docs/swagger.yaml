@@ -1,0 +1,223 @@
+basePath: /api/v1
+definitions:
+  mira_internal_core.CreateNoteInput:
+    properties:
+      content:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+  mira_internal_core.Note:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  mira_internal_core.UpdateNoteInput:
+    properties:
+      content:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+  mira_internal_http_response.ErrorBody:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API de gestion de notes (CRUD + recherche texte simple) du projet fil
+    rouge Mira. Stockage en mémoire.
+  title: Mira API
+  version: "1.0"
+paths:
+  /notes:
+    get:
+      description: Lists notes, paginated
+      parameters:
+      - description: Max number of notes to return (default 20, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Number of notes to skip (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/mira_internal_core.Note'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: List notes
+      tags:
+      - notes
+    post:
+      consumes:
+      - application/json
+      description: Creates a new note
+      parameters:
+      - description: Note to create
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/mira_internal_core.CreateNoteInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/mira_internal_core.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: Create a note
+      tags:
+      - notes
+  /notes/{id}:
+    delete:
+      description: Deletes a note by id
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: Delete a note
+      tags:
+      - notes
+    get:
+      description: Retrieves a single note by id
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mira_internal_core.Note'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: Get a note
+      tags:
+      - notes
+    patch:
+      consumes:
+      - application/json
+      description: Partially updates a note (only provided fields are applied)
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/mira_internal_core.UpdateNoteInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mira_internal_core.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: Update a note
+      tags:
+      - notes
+  /search:
+    get:
+      description: Case-insensitive text search over the title and content of notes,
+        paginated
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Max number of notes to return (default 20, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Number of notes to skip (default 0)
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/mira_internal_core.Note'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/mira_internal_http_response.ErrorBody'
+      summary: Search notes
+      tags:
+      - notes
+swagger: "2.0"
