@@ -6,7 +6,7 @@ Auteur : Alexandre CAROL
 
 ## DEMO MIRA
 
-[![DEMO MIRA](./DEMO_MIRA.mp4)](./DEMO_MIRA.mp4)
+https://github.com/user-attachments/assets/3a170f64-c58c-44a7-8473-77d402068f8b
 
 ### Fonctionnalités
 
