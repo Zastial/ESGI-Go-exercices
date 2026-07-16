@@ -78,9 +78,9 @@ jobs:
       - uses: ./.github/actions/setup-go
 
       - name: Build binary
-        working-directory: ./tp4/cmd/mira
-        run: go build -o mira .
+        working-directory: ./tp4/cmd/api
+        run: go build -o api .
 
       - name: Verify binary
-        working-directory: ./tp4/cmd/mira
-        run: file mira && ./mira -version 2>/dev/null || echo "Binary built successfully"
+        working-directory: ./tp4/cmd/api
+        run: file api && echo "Binary built successfully"
