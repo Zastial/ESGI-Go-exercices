@@ -4,6 +4,9 @@
 
 Auteur : Alexandre CAROL
 
+## DEMO MIRA
+
+[![DEMO MIRA](./DEMO_MIRA.mp4)](./DEMO_MIRA.mp4)
 
 ### Fonctionnalités
 
@@ -14,6 +17,8 @@ Auteur : Alexandre CAROL
   cd tp4
 
   docker compose up -d # lancer la bdd
+
+  go run ./cmd/api # lancer l'API
 
   MIRA_API_URL=http://localhost:8080/api/v1 go run ./cmd/cli add "Note test" "Contenu" tag1,tag2
   MIRA_API_URL=http://localhost:8080/api/v1 go run ./cmd/cli list
@@ -158,7 +163,8 @@ go build ./cmd/mira-mcp
 ### Tests unitaires & intégration (À faire)
 ```bash
 cd tp4
-go test ./...
+go test ./internal/http/handlers -v
+go test ./internal/store -v 
 ```
 
 ## Architecture
