@@ -14,6 +14,18 @@ jobs:
 
       - uses: ./.github/actions/setup-go
 
+      - name: go fmt
+        working-directory: ./tp4
+        run: |
+          if [ -n "$(go fmt ./...)" ]; then
+            echo "go fmt check failed"
+            exit 1
+          fi
+
+      - name: go vet
+        working-directory: ./tp4
+        run: go vet ./...
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:

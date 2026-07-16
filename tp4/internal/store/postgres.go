@@ -30,7 +30,7 @@ func (s *PostgresStore) Create(ctx context.Context, input core.CreateNoteInput) 
 	if err != nil {
 		return core.Note{}, err
 	}
-	defer tx.Rollback(ctx)
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	noteID := uuid.NewString()
 	now := time.Now().UTC()
@@ -75,7 +75,7 @@ func (s *PostgresStore) Update(ctx context.Context, id string, input core.Update
 	if err != nil {
 		return core.Note{}, err
 	}
-	defer tx.Rollback(ctx)
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	current, err := s.loadOne(ctx, tx.QueryRow(ctx, noteByIDQuery, id))
 	if err != nil {
@@ -161,7 +161,7 @@ func (s *PostgresStore) ApplyEnrichment(ctx context.Context, id string, result c
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	current, err := s.loadOne(ctx, tx.QueryRow(ctx, noteByIDQuery, id))
 	if err != nil {
