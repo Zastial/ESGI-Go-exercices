@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-go
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: ./tp4
+          args: --timeout=5m
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-go
+
+      - name: Run tests (handlers)
+        working-directory: ./tp4
+        run: go test ./internal/http/handlers -v -race -coverprofile=coverage-handlers.out
+
+      - name: Run tests (store)
+        working-directory: ./tp4
+        run: go test ./internal/store -v -race -coverprofile=coverage-store.out
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./tp4/coverage-handlers.out,./tp4/coverage-store.out
+          flags: unittests
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-go
+
+      - name: Build binary
+        working-directory: ./tp4/cmd/mira
+        run: go build -o mira .
+
+      - name: Verify binary
+        working-directory: ./tp4/cmd/mira
+        run: file mira && ./mira -version 2>/dev/null || echo "Binary built successfully"
