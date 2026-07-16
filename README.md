@@ -1,3 +1,5 @@
+[![CI](https://github.com/Zastial/ESGI-Go-exercices/actions/workflows/ci.yml/badge.svg)](https://github.com/Zastial/ESGI-Go-exercices/actions/workflows/ci.yml)
+
 # Projet Mira - Parcours Go ESGI
 
 Auteur : Alexandre CAROL
